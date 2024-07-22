@@ -6,7 +6,6 @@
 <main class="pt-5">
   <div class="container">
     <h1 class="h5">Shopping cart</h1>
-
     <hr />
 
     {% for item in cart %}
@@ -16,12 +15,10 @@
     <div class="row mb-4 border product-item">
       <div class="col-md-3 col-lg-2 order-md-first bg-light">
         <img class="img-fluid mx-auto d-block" width="200px" alt="Responsive image" src="{{ product.image.url }}" />
-        <!-- Product image -->
       </div>
 
       <div class="col-md-9 col-lg-10 ps-md-3 ps-lg-10">
         <a href="{{ product.get_absolute_url }}" class="text-decoration-none text-reset">
-          <!-- Product get absolute url -->
           <h1 class="h5 pt-2">{{ product.title }}</h1>
         </a>
 
@@ -38,9 +35,9 @@
           <div class="col">
             <div class="row p-3">
               <div class="col-12">
-                <label for="select-{{ item.id }}">Qty</label>
+                <label for="select-{{ product.id }}">Qty</label>
                 &nbsp;
-                <select id="select-{{ item.id }}">
+                <select id="select{{ product.id }}">
                   <option selected>{{ item.qty }}</option>
                   <option value="1">1</option>
                   <option value="2">2</option>
@@ -48,14 +45,13 @@
                   <option value="4">4</option>
                 </select>
 
-                <br />
-                <br />
+                <br /><br />
 
-                <button type="button" class="btn btn-primary btn-sm update-button" data-item-id="{{ item.id }}">
+                <button type="button" class="btn btn-primary btn-sm update-button" data-index="{{product.id}}">
                   Update
                 </button>
                 &nbsp;
-                <button type="button" class="btn btn-danger btn-sm delete-button" data-item-id="{{ item.id }}">
+                <button type="button" class="btn btn-danger btn-sm delete-button" data-index="{{product.id}}">
                   Delete
                 </button>
               </div>
@@ -75,11 +71,61 @@
       </div>
     </div>
   </div>
-
-
-  <br>
-  <br>
-
+  <br><br>
 </main>
+
+<script>
+  $(document).on('click', '.delete-button', function(e){
+      e.preventDefault();
+
+      $.ajax({
+          type: 'POST',
+          url: '{% url "cart_delete" %}',
+          data: {
+              product_id: $(this).data('index'),
+              csrfmiddlewaretoken: "{{ csrf_token }}",
+              action: 'post'
+          },
+          success: function(json){
+              location.reload()
+              document.getElementById('cart-qty').textContent = json.qty 
+              document.getElementById('total').textContent = json.total
+          },
+          error: function(xhr, errmsg, err){
+              console.log(errmsg);
+          }
+      });
+  });
+
+  //update
+  $(document).on('click', '.update-button', function(e){
+    e.preventDefault();
+
+    var theproductid = $(this).data('index');
+    var product_quantity = $('#select' + theproductid + ' option:selected').val();
+
+    console.log('Product ID:', theproductid);
+    console.log('Product Quantity:', product_quantity);
+
+    $.ajax({
+        type: 'POST',
+        url: '{% url "cart_update" %}',
+        data: {
+            product_id: theproductid,
+            product_quantity: product_quantity,
+            csrfmiddlewaretoken: "{{ csrf_token }}",
+            action: 'post'
+        },
+        success: function(json){
+            location.reload();
+            document.getElementById('cart-qty').textContent = json.qty;
+            document.getElementById('total').textContent = json.total;
+        },
+        error: function(xhr, errmsg, err){
+            console.log('Error:', errmsg);
+        }
+    });
+  });
+</script>
 
 {% endblock %}

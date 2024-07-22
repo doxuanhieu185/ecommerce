@@ -16,6 +16,26 @@ class Cart():
         else:
             self.cart[product_id] = {'price': str(product.price), 'qty': product_qty}
         self.session.modified = True
+        
+    
+    def delete(self, product):
+        product_id = str(product)
+        if product_id in self.cart:
+            del self.cart[product_id]  
+            
+        self.session.modified = True      
+    
+    
+    def update(self, product, qty):
+        product_id = str(product)
+        product_quantity = int(qty)
+        if product_id in self.cart:
+            self.cart[product_id]['qty'] = product_quantity
+        
+        self.session.modified = True  
+        
+    
+    
 
     def __len__(self):
         return sum(item['qty'] for item in self.cart.values() if isinstance(item, dict) and 'qty' in item)
