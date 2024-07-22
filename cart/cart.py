@@ -35,7 +35,8 @@ class Cart():
         self.session.modified = True  
         
     
-    
+    def test(self):
+        print('ok')
 
     def __len__(self):
         return sum(item['qty'] for item in self.cart.values() if isinstance(item, dict) and 'qty' in item)
