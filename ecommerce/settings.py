@@ -124,7 +124,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATICFILE_DIRS = [BASE_DIR / 'static']
+STATICFILES_DIRS = [BASE_DIR / 'static']
 
 MEDIA_URL = '/media/'
 
@@ -135,3 +135,15 @@ MEDIA_ROOT = BASE_DIR / 'static/media'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+
+EMAIL_HOST = 'smtp.gmail.com'
+
+EMAIL_PORT = '587'
+
+EMAIL_USE_TLS = 'True'
+
+EMAIL_HOST_USER = 'Dohieu825@gmail.com'
+EMAIL_HOST_PASSWORD = 'sbbpmzdssndoutwh'
